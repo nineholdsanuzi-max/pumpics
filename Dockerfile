@@ -11,8 +11,8 @@ COPY src ./src
 COPY public ./public
 COPY data ./data
 COPY scripts ./scripts
-RUN mkdir -p /data && chown -R node:node /data /app
-USER node
+# Runs as root: Railway (and most hosts) mount volumes owned by root, so a non-root user couldn't write the database.
+RUN mkdir -p /data
 EXPOSE 3000
 HEALTHCHECK --interval=30s --timeout=5s --start-period=20s CMD node -e "fetch('http://127.0.0.1:'+(process.env.PORT||3000)+'/api/health').then(r=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 CMD ["node", "server.js"]
