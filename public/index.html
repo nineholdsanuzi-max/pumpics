@@ -1,0 +1,446 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PUMPICS</title>
+<meta name="description" content="Pick 5 real memecoin traders. If your five make the most profit this hour, you win the prize pot in SOL.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta property="og:title" content="PUMPICS">
+<meta property="og:description" content="Pick 5 real memecoin traders. The best squad every hour gets paid.">
+<meta property="og:image" content="/og.png">
+<link rel="preload" href="/fonts/fredoka-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin>
+<style>
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/fredoka-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/fredoka-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Fredoka";font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/fredoka-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/nunito-latin-500-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/nunito-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/nunito-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:800;font-display:swap;src:url(/fonts/nunito-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-style:normal;font-weight:900;font-display:swap;src:url(/fonts/nunito-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"DM Mono";font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/dm-mono-latin-400-normal.woff2) format("woff2")}
+@font-face{font-family:"DM Mono";font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/dm-mono-latin-500-normal.woff2) format("woff2")}
+/* Layout: a sunlit marble arena. Laurelled wordmark and live prize pot up top,
+   a five-step podium where your picks stand as medal-wearing mascots, the trader market beside it. */
+:root{
+  --marble:#f3f8f4;       /* arena floor */
+  --paper:#ffffff;        /* cards */
+  --leaf:#1cc35a;         /* ring green, the one bright accent */
+  --ever:#0e8a3c;         /* deep green for text accents */
+  --pine:#0b3a21;         /* ink / outlines */
+  --sage:#6a8b76;         /* secondary text */
+  --mint:#e3f4e8;         /* tints */
+  --line:#d7e7dc;         /* hairlines */
+  --gold:#e9b52a; --silver:#b7c2bc; --bronze:#d68a4c;
+  --down:#d9434b;
+  --f-display:"Fredoka","Baloo 2","Arial Rounded MT Bold",system-ui,sans-serif;
+  --f-body:"Nunito",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-mono:"DM Mono",ui-monospace,Menlo,monospace;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{background:var(--marble)}
+body{color:var(--pine);font-family:var(--f-body);font-size:15px;line-height:1.5;padding-inline:16px;padding-block:0 56px;
+  background:
+    radial-gradient(1100px 520px at 50% -160px, #ffffff 0%, rgba(255,255,255,0) 70%),
+    radial-gradient(700px 400px at 100% 30%, rgba(28,195,90,.08), transparent 70%),
+    radial-gradient(700px 400px at 0% 60%, rgba(28,195,90,.07), transparent 70%),
+    var(--marble);
+}
+.wrap{max-width:1240px;margin-inline:auto;position:relative}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+button{font:inherit;color:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+a{color:var(--ever)}
+
+/* confetti strip */
+.confetti{position:absolute;inset:0 0 auto 0;height:420px;pointer-events:none;overflow:hidden;z-index:0}
+.confetti i{position:absolute;top:-20px;width:10px;height:16px;border-radius:2px;background:var(--leaf);opacity:.55;animation:fall linear infinite}
+.confetti i:nth-child(3n){background:#ffffff;box-shadow:0 0 0 1px var(--line)}
+.confetti i:nth-child(4n){background:var(--ever);opacity:.35}
+@keyframes fall{0%{transform:translateY(0) rotate(0)}100%{transform:translateY(440px) rotate(540deg)}}
+
+/* ---------- top bar ---------- */
+.top{position:relative;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:16px;padding-block:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;text-decoration:none}
+.brand img{height:34px;width:auto}
+.brand b{font-family:var(--f-display);font-weight:700;font-size:26px;color:var(--pine);letter-spacing:-.01em}
+.nav{display:flex;gap:4px;flex-wrap:wrap}
+.nav a{color:var(--sage);text-decoration:none;font-weight:800;font-size:14px;padding:8px 14px;border-radius:999px}
+.nav a:hover{color:var(--pine);background:var(--paper)}
+.pill-btn{background:var(--leaf);color:#fff;border:2px solid var(--pine);border-radius:999px;padding:9px 18px;font-weight:900;font-size:14px;box-shadow:0 3px 0 var(--pine)}
+.pill-btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--pine)}
+
+/* ---------- hero ---------- */
+.hero{position:relative;z-index:1;display:grid;justify-items:center;text-align:center;padding-block:12px 28px}
+.mark{display:flex;flex-direction:column;align-items:center;gap:6px}
+.mark img{width:min(260px,62%);height:auto}
+.wordmark{display:flex;align-items:center;gap:6px}
+.wordmark h1{margin:0;font-family:var(--f-display);font-weight:700;font-size:clamp(56px,9vw,112px);line-height:.95;letter-spacing:-.02em;color:var(--pine);
+  -webkit-text-stroke:0;text-shadow:
+   0 0 0 #fff, 4px 0 0 #fff, -4px 0 0 #fff, 0 4px 0 #fff, 0 -4px 0 #fff, 3px 3px 0 #fff, -3px 3px 0 #fff, 3px -3px 0 #fff, -3px -3px 0 #fff,
+   7px 0 0 var(--leaf), -7px 0 0 var(--leaf), 0 7px 0 var(--leaf), 0 -6px 0 var(--leaf), 5px 5px 0 var(--leaf), -5px 5px 0 var(--leaf), 5px -5px 0 var(--leaf), -5px -5px 0 var(--leaf),
+   0 14px 22px rgba(14,138,60,.25)}
+.laurel{width:clamp(28px,4.5vw,52px);height:auto;flex:none}
+.laurel.r{transform:scaleX(-1)}
+.tagline{font-family:var(--f-display);font-weight:600;font-size:clamp(20px,2.4vw,26px);line-height:1.25;margin:14px auto 0;max-width:34ch;text-wrap:balance}
+.tagline em{font-style:normal;color:var(--leaf)}
+.how-row{display:flex;gap:0;margin-top:18px;flex-wrap:wrap;justify-content:center;text-align:left}
+.how-row div{display:flex;align-items:center;gap:10px;padding:4px 18px 4px 0;margin-right:18px;border-right:2px solid var(--line);font-weight:900;font-size:13px;line-height:1.2;text-transform:uppercase;letter-spacing:.03em}
+.how-row div:last-child{border-right:0;margin-right:0;padding-right:0}
+.how-row svg{width:30px;height:30px;flex:none}
+.art{position:relative;border-radius:28px;overflow:hidden;aspect-ratio:684/561;max-width:100%;
+  background:var(--paper);border:3px solid var(--paper);box-shadow:0 0 0 2px var(--line),0 24px 50px -24px rgba(11,58,33,.35)}
+.art img{width:100%;height:100%;object-fit:cover;display:block}
+
+/* ---------- scoreboard ---------- */
+.board{position:relative;z-index:2;display:grid;grid-template-columns:1.4fr 1fr 1fr 1fr;gap:12px}
+.cell{background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:16px 18px;min-width:0}
+.cell.pot-cell{background:linear-gradient(160deg,#ffffff 0%,#e9f8ee 100%);border-color:var(--leaf);box-shadow:0 5px 0 var(--ever)}
+.label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);font-weight:900}
+.pot{font-family:var(--f-display);font-weight:700;font-size:clamp(42px,5.5vw,64px);line-height:1;color:var(--pine);font-variant-numeric:tabular-nums;margin-top:4px}
+.pot small{font-size:.42em;color:var(--leaf);margin-left:6px}
+.feed{font-size:12.5px;color:var(--sage);margin-top:6px;min-height:19px;font-weight:700}
+.feed b{color:var(--ever)}
+.big{font-family:var(--f-display);font-weight:700;font-size:36px;line-height:1.1;font-variant-numeric:tabular-nums;margin-top:4px}
+.live{display:inline-flex;align-items:center;gap:6px;font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--ever);font-weight:900}
+.live::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--leaf);box-shadow:0 0 0 3px var(--mint);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.3}}
+
+/* ---------- main ---------- */
+main{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:28px;align-items:start;position:relative;z-index:2}
+h2{font-family:var(--f-display);font-weight:700;font-size:30px;margin:0;line-height:1.1;text-wrap:balance}
+.head{display:flex;justify-content:space-between;align-items:end;gap:12px;margin-bottom:12px;flex-wrap:wrap}
+.sub{font-size:13px;color:var(--sage);font-weight:700}
+
+/* podium stage */
+.stage{position:relative;background:linear-gradient(180deg,#ffffff 0%,#eef7f1 100%);border:2px solid var(--line);border-radius:28px;padding:18px 12px 0;overflow:hidden}
+.stage::before{content:"";position:absolute;inset:auto 0 0 0;height:30px;background:linear-gradient(180deg,#e8efe9,#dfe8e1)}
+.podium{position:relative;display:grid;grid-template-columns:repeat(5,minmax(0,1fr));align-items:end;gap:6px}
+.spot{background:none;border:0;padding:0;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0}
+.mascot{width:min(100%,96px);aspect-ratio:1/1.1;position:relative}
+.mascot svg{width:100%;height:100%;display:block;filter:drop-shadow(0 8px 8px rgba(11,58,33,.18))}
+.spot:hover .mascot{transform:translateY(-3px)}
+.spot.pop .mascot{animation:pop .4s ease-out}
+@keyframes pop{0%{transform:scale(.6) translateY(10px)}70%{transform:scale(1.08)}100%{transform:scale(1)}}
+.tag-name{background:var(--paper);border:2px solid var(--line);border-radius:12px;padding:3px 6px;text-align:center;width:100%;min-width:0}
+.tag-name .n{display:block;font-weight:900;font-size:12.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag-name .p{display:block;font-size:11px}
+.tag-name .pos{font-size:11px;color:var(--sage);font-weight:800}
+.block{width:100%;border-radius:10px 10px 0 0;background:linear-gradient(180deg,#ffffff 0%,#e9efea 100%);border:2px solid #dfe7e1;border-bottom:0;display:grid;place-items:center;
+  font-family:var(--f-display);font-weight:700;color:#9fb0a6;font-size:clamp(26px,4vw,40px);position:relative;z-index:1;
+  box-shadow:inset 0 -10px 18px rgba(11,58,33,.05)}
+.p1 .block{height:118px;color:#8fa198}.p2 .block{height:92px}.p3 .block{height:76px}.p4 .block{height:58px}.p5 .block{height:46px}
+.p1 .block::after{content:"";position:absolute;top:10px;width:46px;height:46px;border-radius:50%;border:3px dashed rgba(143,161,152,.35)}
+.capnote{display:inline-flex;align-items:center;gap:6px;font-weight:900;font-size:12px;background:var(--mint);color:var(--ever);border-radius:999px;padding:4px 10px}
+
+.squadbar{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;margin-top:12px}
+.squadbar > div{background:var(--paper);border:2px solid var(--line);border-radius:18px;padding:11px 14px;min-width:0}
+.budget{height:8px;background:var(--mint);border-radius:999px;margin-top:6px;overflow:hidden}
+.budget i{display:block;height:100%;background:var(--leaf);border-radius:999px;transition:width .3s}
+.budget.over i{background:var(--down)}
+.actions{display:flex;gap:10px;margin-top:12px;flex-wrap:wrap}
+.btn{border:2px solid var(--line);background:var(--paper);padding:11px 18px;border-radius:999px;font-weight:900;font-size:14px}
+.btn:hover{border-color:var(--leaf)}
+.btn.go{flex:1;background:var(--leaf);color:#fff;border-color:var(--pine);font-family:var(--f-display);font-weight:700;font-size:20px;padding:9px 18px;box-shadow:0 4px 0 var(--pine)}
+.btn.go:active{transform:translateY(2px);box-shadow:0 2px 0 var(--pine)}
+.btn.go:disabled{background:#cfe1d5;color:#7f9888;border-color:#b8cbbe;box-shadow:0 4px 0 #b8cbbe;cursor:not-allowed;transform:none}
+.hint{font-size:13px;color:var(--sage);margin-top:10px;min-height:20px;font-weight:700}
+
+/* scout card */
+.scout{margin-top:12px;border:2px solid var(--line);border-radius:22px;background:var(--paper);padding:14px;display:grid;gap:12px}
+.scout:empty{display:none}
+.sc-top{display:flex;gap:12px;align-items:center}
+.sc-top .price-tag{margin-left:auto;background:var(--pine);color:#fff;border-radius:999px;padding:4px 10px;font-weight:700;font-size:13px;flex:none}
+.sc-links{display:flex;gap:12px;flex-wrap:wrap;font-size:13px;font-weight:800}
+.sc-links a{color:var(--ever);text-decoration:none}.sc-links a:hover{text-decoration:underline}
+.sc-links span{color:var(--sage)}
+.sc-wallet{display:flex;gap:8px;align-items:center;min-width:0}
+.sc-wallet code{flex:1;min-width:0;overflow-x:auto;white-space:nowrap;font-size:12px;background:var(--marble);border:2px solid var(--line);border-radius:12px;padding:7px 10px;color:var(--pine)}
+.sc-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+
+/* market */
+.tools{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.chip{border:2px solid var(--line);background:var(--paper);border-radius:999px;padding:6px 12px;font-size:12.5px;font-weight:800;color:var(--sage)}
+.chip[aria-pressed="true"]{background:var(--pine);color:#fff;border-color:var(--pine)}
+.search{flex:1 1 100%;background:var(--paper);border:2px solid var(--line);border-radius:999px;padding:10px 16px;color:var(--pine);font-size:14px;font-weight:700;font-family:var(--f-body)}
+.search:focus{border-color:var(--leaf);outline:0}
+.market{border:2px solid var(--line);border-radius:22px;overflow:hidden;background:var(--paper)}
+.mhead,.row{display:grid;grid-template-columns:minmax(0,2.2fr) 1fr 0.9fr 1fr 0.8fr;align-items:center;gap:10px;padding:10px 14px}
+.mhead{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);font-weight:900;border-bottom:2px solid var(--line);background:#f7fbf8}
+.mhead button{background:none;border:0;padding:0;text-align:left;letter-spacing:inherit;text-transform:inherit;color:inherit;font-weight:900}
+.mhead button.on{color:var(--ever)}
+.rows{max-height:660px;overflow:auto}
+.row{border-bottom:1px solid var(--line);width:100%;background:none;border-left:0;border-right:0;border-top:0;text-align:left;font-size:14px}
+.row:hover{background:#f4faf6}
+.row.in{background:var(--mint)}
+.row.in .add{background:var(--leaf);color:#fff;border-color:var(--pine)}
+.who{display:flex;gap:10px;align-items:center;min-width:0}
+.av{width:36px;height:36px;border-radius:50%;flex:none;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:16px;color:var(--pine);border:2px solid var(--pine)}
+.who .t{min-width:0}
+.who b{display:block;font-weight:900;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.who small{display:block;color:var(--sage);font-size:11.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.medal{display:inline-grid;place-items:center;min-width:22px;height:18px;padding:0 5px;border-radius:999px;background:var(--gold);color:#5a3e00;font-family:var(--f-mono);font-size:10.5px;font-weight:500;vertical-align:1px}
+.up{color:var(--ever)}.down{color:var(--down)}
+.nil{color:var(--sage);opacity:.6}
+.add{width:30px;height:30px;border-radius:50%;border:2px solid var(--line);background:var(--paper);display:grid;place-items:center;justify-self:end;font-size:17px;line-height:1;font-weight:900;color:var(--ever)}
+.more{display:block;width:100%;padding:14px;background:#f7fbf8;border:0;border-top:2px solid var(--line);color:var(--ever);font-weight:900;font-size:13.5px}
+.note{font-size:12.5px;color:var(--sage);margin-top:10px;font-weight:600;max-width:70ch}
+
+/* lower */
+.lower{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:24px;margin-top:44px}
+.table{border:2px solid var(--line);border-radius:22px;overflow:hidden;background:var(--paper)}
+.lb{display:grid;grid-template-columns:40px minmax(0,1fr) auto auto;gap:12px;align-items:center;padding:11px 14px;border-bottom:1px solid var(--line);font-size:14px}
+.lb:last-child{border-bottom:0}
+.lb .rk{width:30px;height:30px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:15px;background:var(--marble);color:var(--sage)}
+.lb:nth-child(1) .rk{background:var(--gold);color:#5a3e00}
+.lb:nth-child(2) .rk{background:var(--silver);color:#2e3a33}
+.lb:nth-child(3) .rk{background:var(--bronze);color:#4a2306}
+.lb.first{background:linear-gradient(90deg,#fff7df,transparent 70%)}
+.lb.you{outline:2px dashed var(--leaf);outline-offset:-2px}
+.lb .mgr b{display:block;font-weight:900}
+.lb .mgr small{color:var(--sage);font-size:11.5px}
+.prize{font-size:11px;font-weight:900;color:var(--ever);background:var(--mint);border-radius:999px;padding:3px 9px}
+.how{display:grid;gap:10px}
+.step{background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:16px 18px;display:grid;grid-template-columns:auto 1fr;gap:14px;align-items:start}
+.step .k{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;font-family:var(--f-display);font-weight:700;font-size:20px;color:#fff;background:var(--leaf);border:2px solid var(--pine)}
+.step h3{margin:0 0 2px;font-size:16px;font-weight:900}
+.step p{margin:0;color:var(--sage);font-size:14px;max-width:60ch;font-weight:600}
+.foot{margin-top:40px;padding-top:18px;border-top:2px solid var(--line);color:var(--sage);font-size:12.5px;font-weight:700;display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translate(-50%,40px);opacity:0;background:var(--pine);color:#fff;padding:10px 18px;border-radius:999px;font-weight:800;font-size:13.5px;transition:.25s;pointer-events:none;z-index:9}
+.toast.on{transform:translate(-50%,0);opacity:1}
+
+@media (max-width:960px){
+  .hero,main,.lower{grid-template-columns:minmax(0,1fr)}
+  .art{max-width:520px}
+  .board{grid-template-columns:1fr 1fr}
+  .pot-cell{grid-column:1/-1}
+}
+@media (max-width:560px){
+  .nav{display:none}
+  .board{grid-template-columns:1fr}
+  .mhead,.row{grid-template-columns:minmax(0,2fr) 1fr 0.8fr}
+  .c-7,.mhead .c-7,.c-style,.mhead .c-style{display:none}
+  .squadbar{grid-template-columns:1fr 1fr}
+  .squadbar > div:last-child{grid-column:1/-1}
+  .sc-stats{grid-template-columns:1fr 1fr}
+  .tag-name .n{font-size:11px}
+  .tag-name .p{font-size:10px}
+  .how-row div{border-right:0;margin-right:0;padding-right:12px}
+  .p1 .block{height:84px}.p2 .block{height:66px}.p3 .block{height:54px}.p4 .block{height:42px}.p5 .block{height:34px}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---- live site additions ---- */
+.pill-btn.on{background:var(--paper);color:var(--pine)}
+.pill-btn .dot{display:inline-block;width:8px;height:8px;border-radius:50%;background:var(--leaf);margin-right:6px;vertical-align:1px}
+.testmode{display:none;position:relative;z-index:2;margin:0 auto 12px;max-width:fit-content;background:#fff7df;border:2px solid #f1d27a;color:#6b4e00;border-radius:999px;padding:6px 14px;font-weight:800;font-size:12.5px}
+.testmode.on{display:block}
+.status{display:inline-flex;align-items:center;gap:6px;font-weight:900;font-size:12px;border-radius:999px;padding:4px 10px;background:var(--marble);color:var(--sage)}
+.status.in{background:var(--mint);color:var(--ever)}
+.status.dirty{background:#fff7df;color:#6b4e00}
+.feed a,.note a{color:var(--ever);font-weight:800}
+.modal{position:fixed;inset:0;z-index:20;display:grid;place-items:center;padding:16px;background:rgba(11,58,33,.35);backdrop-filter:blur(3px)}
+.modal[hidden]{display:none}
+.sheet{width:min(420px,100%);background:var(--paper);border:2px solid var(--line);border-radius:26px;padding:20px;box-shadow:0 30px 60px -20px rgba(11,58,33,.45);display:grid;gap:12px;max-height:90vh;overflow:auto}
+.sheet h3{margin:0;font-family:var(--f-display);font-size:24px}
+.sheet p{margin:0;color:var(--sage);font-weight:700;font-size:13.5px}
+.wl{display:grid;gap:8px}
+.wopt{display:flex;align-items:center;gap:12px;width:100%;text-align:left;background:var(--marble);border:2px solid var(--line);border-radius:16px;padding:10px 12px;font-weight:900;font-size:15px;color:var(--pine);text-decoration:none}
+.wopt:hover{border-color:var(--leaf)}
+.wopt img,.wopt .wi{width:32px;height:32px;border-radius:9px;flex:none;background:var(--paper);display:grid;place-items:center;font-family:var(--f-display)}
+.wopt small{margin-left:auto;color:var(--sage);font-size:12px;font-weight:800}
+.x{justify-self:end;border:0;background:none;font-size:22px;line-height:1;color:var(--sage);padding:4px}
+.mine{display:grid;gap:10px}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:22px;padding:14px 16px}
+.card h3{margin:0 0 6px;font-size:15px;font-weight:900}
+.picks{display:flex;flex-wrap:wrap;gap:6px}
+.picks span{background:var(--marble);border-radius:999px;padding:3px 10px;font-size:12.5px;font-weight:800}
+.picks span:first-child{background:var(--gold);color:#5a3e00}
+.hist{display:grid;gap:0}
+.hist div{display:grid;grid-template-columns:auto 1fr auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.hist div:last-child{border-bottom:0}
+.empty{padding:22px 16px;color:var(--sage);font-weight:700;font-size:14px;text-align:center}
+.tabs{display:flex;gap:6px}
+.lb .mgr a{color:inherit;text-decoration:none}
+
+/* ---- merged from the redesign: logo, steps, CTAs, FAQ ---- */
+.brand svg{width:58px;height:auto;--pm-gap:var(--marble)}
+.mark > svg{width:min(320px,66%);height:auto;--pm-gap:var(--marble);filter:drop-shadow(0 10px 18px rgba(14,138,60,.18))}
+.lede{font-size:clamp(16px,1.6vw,18px);color:var(--sage);font-weight:700;max-width:46ch;margin:12px auto 0}
+.lede b{color:var(--pine)}
+.ctas{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;margin-top:20px}
+.btn-lg{display:inline-flex;align-items:center;gap:8px;border-radius:999px;padding:13px 24px;font-weight:900;font-size:15.5px;text-decoration:none}
+.btn-lg.primary{background:var(--leaf);color:#fff;border:2px solid var(--pine);box-shadow:0 4px 0 var(--pine)}
+.btn-lg.primary:active{transform:translateY(2px);box-shadow:0 2px 0 var(--pine)}
+.btn-lg.ghost{background:var(--paper);color:var(--pine);border:2px solid var(--line)}
+.steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin-top:14px;position:relative;z-index:2}
+.head p{margin:2px 0 0;color:var(--sage);font-weight:700;font-size:14px}
+.mhead,.row{grid-template-columns:minmax(0,2.2fr) 1.05fr 1fr 0.8fr}
+.faq{margin-top:56px;display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:24px;align-items:start}
+.faq .qs{display:grid;gap:10px}
+.faq details{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:14px 18px}
+.faq summary{cursor:pointer;list-style:none;font-weight:900;font-size:15.5px;display:flex;justify-content:space-between;gap:16px;align-items:center}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"+";flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--mint);color:var(--ever);font-weight:900}
+.faq details[open] summary::after{content:"–"}
+.faq details p{margin:8px 0 0;color:var(--sage);font-weight:600;max-width:64ch}
+.foot .brand svg{width:44px}
+.rare{display:inline-block;background:var(--gold);color:#5a3e00;border-radius:999px;padding:0 6px;font-family:var(--f-body);font-weight:900;font-size:10px;letter-spacing:.02em}
+@media (max-width:960px){.faq{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:640px){.steps{grid-template-columns:minmax(0,1fr)} .mhead,.row{grid-template-columns:minmax(0,2fr) 1fr 0.7fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <a class="brand" href="#" aria-label="PUMPICS home"><span data-logo></span><b>Pumpics</b></a>
+    <nav class="nav" aria-label="Main"><a href="#how">How it works</a><a href="#draft">Play</a><a href="#table">Leaderboard</a><a href="#faq">FAQ</a></nav>
+    <button class="pill-btn" id="wallet" type="button" aria-haspopup="dialog">Connect wallet</button>
+  </header>
+
+  <div class="testmode" id="testmode">Test mode: winners are recorded, but no SOL is sent yet.</div>
+  <section class="hero" aria-labelledby="h-hero">
+    <div class="mark">
+      <span data-logo></span>
+      <div class="wordmark">
+        <svg class="laurel" viewBox="0 0 40 90" aria-hidden="true"><g fill="#1cc35a" stroke="#0b3a21" stroke-width="1.6"><path d="M30 88 C14 70 10 46 18 6" fill="none" stroke-width="3"/><ellipse cx="11" cy="74" rx="9" ry="4.5" transform="rotate(-30 11 74)"/><ellipse cx="8" cy="58" rx="9" ry="4.5" transform="rotate(-50 8 58)"/><ellipse cx="8" cy="42" rx="9" ry="4.5" transform="rotate(-65 8 42)"/><ellipse cx="11" cy="26" rx="8" ry="4" transform="rotate(-80 11 26)"/><ellipse cx="27" cy="66" rx="8" ry="4" transform="rotate(35 27 66)"/><ellipse cx="25" cy="49" rx="8" ry="4" transform="rotate(20 25 49)"/><ellipse cx="24" cy="32" rx="7" ry="3.6" transform="rotate(5 24 32)"/><ellipse cx="19" cy="10" rx="6" ry="3.2" transform="rotate(-85 19 10)"/></g></svg>
+        <h1 id="h-hero">Pumpics</h1>
+        <svg class="laurel r" viewBox="0 0 40 90" aria-hidden="true"><g fill="#1cc35a" stroke="#0b3a21" stroke-width="1.6"><path d="M30 88 C14 70 10 46 18 6" fill="none" stroke-width="3"/><ellipse cx="11" cy="74" rx="9" ry="4.5" transform="rotate(-30 11 74)"/><ellipse cx="8" cy="58" rx="9" ry="4.5" transform="rotate(-50 8 58)"/><ellipse cx="8" cy="42" rx="9" ry="4.5" transform="rotate(-65 8 42)"/><ellipse cx="11" cy="26" rx="8" ry="4" transform="rotate(-80 11 26)"/><ellipse cx="27" cy="66" rx="8" ry="4" transform="rotate(35 27 66)"/><ellipse cx="25" cy="49" rx="8" ry="4" transform="rotate(20 25 49)"/><ellipse cx="24" cy="32" rx="7" ry="3.6" transform="rotate(5 24 32)"/><ellipse cx="19" cy="10" rx="6" ry="3.2" transform="rotate(-85 19 10)"/></g></svg>
+      </div>
+      <p class="tagline">Pick 5 traders. <em>Win the hour.</em></p>
+      <p class="lede">Choose five real memecoin traders. If your five make the <b>most profit this hour</b>, you win the prize pot, paid in SOL straight to your wallet.</p>
+      <div class="ctas">
+        <a class="btn-lg primary" href="#draft">Build your squad →</a>
+        <a class="btn-lg ghost" href="#how">How it works</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="board" aria-label="This round">
+    <div class="cell pot-cell">
+      <div class="label">Prize this hour</div>
+      <div class="pot"><span id="pot">–</span><small>SOL</small></div>
+      <div class="feed" id="feed">Loading the prize pot…</div>
+    </div>
+    <div class="cell">
+      <div class="label" id="roundlabel">Next round locks in</div>
+      <div class="big num" id="clock">--:--</div>
+      <div class="live" id="livelabel">Entries open</div>
+    </div>
+    <div class="cell">
+      <div class="label">Players in</div>
+      <div class="big num" id="entries">0</div>
+      <div class="feed" id="entriesnote">for the next round</div>
+    </div>
+    <div class="cell">
+      <div class="label">Top score this hour</div>
+      <div class="big num" id="topscore">–</div>
+      <div class="feed" id="topnote">SOL profit</div>
+    </div>
+  </section>
+
+  <section class="steps" id="how" aria-label="How it works">
+    <div class="step"><div class="k">1</div><div><h3>Pick 5 traders</h3><p>Choose from 514 real traders. Each one has a cost, and your five must fit in 100 credits.</p></div></div>
+    <div class="step"><div class="k">2</div><div><h3>Lock in for the next hour</h3><p>Sign with your wallet. It is free and sends nothing. Your squad plays the next full hour.</p></div></div>
+    <div class="step"><div class="k">3</div><div><h3>Best squad gets paid</h3><p>We add up the profit your traders make that hour. The top squad wins the pot in SOL.</p></div></div>
+  </section>
+
+  <main id="draft">
+    <section aria-labelledby="h-squad">
+      <div class="head">
+        <div><h2 id="h-squad">Your squad</h2><p>Your #1 spot scores double. Rare picks score ×1.5.</p></div>
+        <span class="status" id="entrystatus">Not entered</span>
+      </div>
+      <div class="stage"><div class="podium" id="podium"></div></div>
+      <div class="squadbar">
+        <div>
+          <div class="label">Credits left</div>
+          <div class="num" style="font-size:18px"><span id="left">100</span> <span style="color:var(--sage);font-size:12px">of 100</span></div>
+          <div class="budget" id="bwrap"><i id="bfill" style="width:0%"></i></div>
+        </div>
+        <div>
+          <div class="label">Squad profit · 30 days</div>
+          <div class="num" style="font-size:18px" id="proj">+0.0 SOL</div>
+        </div>
+        <div>
+          <div class="label">#1 pick (2× points)</div>
+          <div style="font-size:15px;font-weight:900" id="capname">Nobody yet</div>
+        </div>
+      </div>
+      <div class="actions">
+        <button class="btn" id="auto" type="button">Auto-pick</button>
+        <button class="btn" id="clear" type="button">Clear</button>
+        <button class="btn go" id="lock" type="button" disabled>Sign &amp; enter</button>
+      </div>
+      <div class="hint" id="hint">Pick 5 traders to fill the podium.</div>
+      <div class="scout" id="scout" aria-live="polite"></div>
+    </section>
+
+    <section aria-labelledby="h-market">
+      <div class="head">
+        <div><h2 id="h-market">Choose traders</h2><p><span id="count">514</span> real traders from Kolscan. Tap one to add them.</p></div>
+      </div>
+      <div class="tools">
+        <input class="search" id="q" type="search" placeholder="Search by name, @handle or wallet" aria-label="Search traders">
+        <div id="styles" style="display:flex;gap:6px;flex-wrap:wrap"></div>
+      </div>
+      <div class="market">
+        <div class="mhead">
+          <button type="button" data-sort="name">Trader</button>
+          <button type="button" data-sort="p30" class="on">Profit · 30d ↓</button>
+          <button type="button" data-sort="p7" class="c-7">Profit · 7d</button>
+          <button type="button" data-sort="price" style="text-align:right">Cost</button>
+        </div>
+        <div class="rows" id="rows"></div>
+      </div>
+      <p class="note">Profit is realized SOL from Kolscan's 30-day, 7-day and 24-hour leaderboards. "—" means the trader wasn't in that top 50. Cost is based on recent profit. <span id="costnote"></span> <b>Rare</b> traders are picked by fewer than 5% of squads, and their profit counts ×1.5.</p>
+    </section>
+  </main>
+
+  <div class="lower">
+    <section id="table" aria-labelledby="h-table">
+      <div class="head"><div><h2 id="h-table">Leaderboard</h2><p>Every squad in the round, ranked by profit.</p></div>
+        <div class="tabs" id="lbtabs"><button type="button" class="chip" aria-pressed="true" data-t="live">This hour</button><button type="button" class="chip" aria-pressed="false" data-t="last">Last round</button></div></div>
+      <div class="table" id="lb"><div class="empty">Loading…</div></div>
+      <p class="note" id="lbnote"></p>
+    </section>
+    <section id="me" aria-labelledby="h-me">
+      <div class="head"><div><h2 id="h-me">Your squads</h2><p>Entries, results and winnings.</p></div></div>
+      <div class="mine" id="mine"><div class="card empty">Connect a wallet to see your squads and winnings.</div></div>
+    </section>
+  </div>
+
+  <section class="faq" id="faq" aria-labelledby="h-faq">
+    <div class="head" style="display:block"><h2 id="h-faq">Questions</h2><p>Everything about how rounds, scores and payouts work.</p></div>
+    <div class="qs">
+      <details open><summary>Does it cost anything to play?</summary><p>No. Entering is a free wallet signature. It proves the wallet is yours and never moves funds or sends a transaction.</p></details>
+      <details><summary>Where does the prize come from?</summary><p>Every trade of the PUMPICS coin pays a creator fee into the treasury. Each hour, a share of the treasury becomes that round's prize. The amount is shown live at the top of the page.</p></details>
+      <details><summary>How is profit counted?</summary><p>For each trader we look at every sell they make during the hour and subtract what they paid for those tokens. Tokens bought but not sold yet don't count. Your #1 pick's profit counts double.</p></details>
+      <details><summary>When can I enter, and when do I get paid?</summary><p>You always enter the next hourly round, and you can change your squad until it starts. A few minutes after the hour ends, the winner is paid in SOL to the wallet that entered. Each payout links to its Solana transaction.</p></details>
+      <details><summary>What is a rare pick?</summary><p>A trader picked by fewer than 5% of squads in the round. Their profit counts ×1.5 for everyone who picked them, so a smart unpopular pick can beat a crowd that all chose the same favourites. The bonus never makes losses bigger. Pick percentages are shown next to every trader.</p></details>
+      <details><summary>Do trader costs change?</summary><p>Yes. Every day we refresh costs from Kolscan's latest leaderboards, so traders on a hot streak cost more and cold ones get cheaper. A squad you already entered keeps its cost.</p></details>
+      <details><summary>What if nobody makes a profit, or there's a tie?</summary><p>If every squad loses money, nobody is paid and the pot rolls into the next round. If squads tie for first, they split the prize equally.</p></details>
+      <details><summary>Which wallets work?</summary><p>Phantom, Solflare, Backpack and other Solana wallets. On a phone, open this site inside your wallet app's browser.</p></details>
+    </div>
+  </section>
+
+  <footer class="foot">
+    <a class="brand" href="#" aria-label="PUMPICS home"><span data-logo></span><b>Pumpics</b></a>
+    <span>Trader data from Kolscan. Payouts on Solana. A new round starts at the top of every hour.</span>
+  </footer>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<div class="modal" id="wmodal" hidden role="dialog" aria-modal="true" aria-labelledby="wm-title">
+  <div class="sheet">
+    <button class="x" type="button" id="wclose" aria-label="Close">×</button>
+    <h3 id="wm-title">Connect a wallet</h3>
+    <p id="wm-sub">Pick the Solana wallet you want to play with.</p>
+    <div class="wl" id="wlist"></div>
+  </div>
+</div>
+<script src="/app.js" defer></script>
+</body>
+</html>

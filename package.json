@@ -1,0 +1,33 @@
+{
+  "name": "pumpics",
+  "version": "1.0.0",
+  "description": "PUMPICS: pick 5 real memecoin traders, best squad each hour wins the creator-fee pot",
+  "main": "server.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "start": "node server.js",
+    "test": "node --test test/*.test.js",
+    "test:e2e": "node --test --test-concurrency=1 test/e2e/*.e2e.js",
+    "test:all": "npm test && npm run test:e2e",
+    "check:kolscan": "node scripts/check-kolscan.js",
+    "check:chain": "node scripts/check-chain.js"
+  },
+  "dependencies": {
+    "@solana/spl-token": "^0.4.9",
+    "@solana/web3.js": "^1.98.0",
+    "better-sqlite3": "^11.8.1",
+    "bs58": "^6.0.0",
+    "express": "^4.21.2",
+    "tweetnacl": "^1.0.3"
+  },
+  "devDependencies": {
+    "litesvm": "^0.1.0",
+    "playwright-core": "^1.56.1"
+  },
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  }
+}

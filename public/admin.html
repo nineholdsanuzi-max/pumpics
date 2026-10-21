@@ -1,0 +1,208 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>PUMPICS Admin</title>
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<style>
+@font-face{font-family:"Fredoka";font-weight:700;font-display:swap;src:url(/fonts/fredoka-latin-700-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-weight:600;font-display:swap;src:url(/fonts/nunito-latin-600-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-weight:800;font-display:swap;src:url(/fonts/nunito-latin-800-normal.woff2) format("woff2")}
+@font-face{font-family:"Nunito";font-weight:900;font-display:swap;src:url(/fonts/nunito-latin-900-normal.woff2) format("woff2")}
+@font-face{font-family:"DM Mono";font-weight:400;font-display:swap;src:url(/fonts/dm-mono-latin-400-normal.woff2) format("woff2")}
+/* Operator console: same marble + green world as the game, denser and table-first. */
+:root{--marble:#f3f8f4;--paper:#fff;--leaf:#1cc35a;--ever:#0e8a3c;--pine:#0b3a21;--sage:#6a8b76;--mint:#e3f4e8;--line:#d7e7dc;--warn:#f1d27a;--warn-ink:#6b4e00;--down:#d9434b;
+  --f-display:"Fredoka",system-ui,sans-serif;--f-body:"Nunito",system-ui,sans-serif;--f-mono:"DM Mono",ui-monospace,monospace;color-scheme:light}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+body{margin:0;background:var(--marble);color:var(--pine);font-family:var(--f-body);font-size:14px;line-height:1.5;padding-inline:16px;padding-block:0 48px}
+.wrap{max-width:1200px;margin-inline:auto}
+.num{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+a{color:var(--ever);font-weight:800}
+button{font:inherit;cursor:pointer}
+:focus-visible{outline:3px solid var(--leaf);outline-offset:2px}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-block:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:10px;font-family:var(--f-display);font-size:22px}
+.brand img{width:40px;height:40px}
+.brand small{font-family:var(--f-body);font-weight:900;font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:var(--pine);color:#fff;border-radius:999px;padding:3px 9px}
+.btn{border:2px solid var(--line);background:var(--paper);color:var(--pine);border-radius:999px;padding:7px 14px;font-weight:900;font-size:13px}
+.btn:hover{border-color:var(--leaf)}
+.btn.go{background:var(--leaf);color:#fff;border-color:var(--pine);box-shadow:0 3px 0 var(--pine)}
+.btn.danger{color:var(--down)}
+.btn.armed{background:var(--down);color:#fff;border-color:#8c1f25}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.card{background:var(--paper);border:2px solid var(--line);border-radius:20px;padding:14px 16px;min-width:0}
+.label{font-size:11px;letter-spacing:.12em;text-transform:uppercase;color:var(--sage);font-weight:900}
+.big{font-family:var(--f-display);font-size:28px;line-height:1.15;margin-top:4px}
+.sub{color:var(--sage);font-weight:600;font-size:12.5px;margin-top:2px;overflow-wrap:anywhere}
+h2{font-family:var(--f-display);font-size:22px;margin:28px 0 10px}
+.toggle{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:8px}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-weight:900;font-size:12px;background:var(--mint);color:var(--ever)}
+.pill.off{background:#fde8e9;color:var(--down)}
+.pill.warn{background:#fff7df;color:var(--warn-ink)}
+.pill.idle{background:var(--marble);color:var(--sage)}
+.tablewrap{background:var(--paper);border:2px solid var(--line);border-radius:20px;overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px;min-width:760px}
+th{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:var(--sage);text-align:left;padding:10px 12px;border-bottom:2px solid var(--line);background:#f7fbf8;font-weight:900}
+td{padding:9px 12px;border-bottom:1px solid var(--line);vertical-align:top}
+tr:last-child td{border-bottom:0}
+td.note{color:var(--sage);max-width:340px}
+.two{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:16px}
+.log{display:grid;gap:0}
+.log div{display:grid;grid-template-columns:auto auto 1fr;gap:10px;padding:8px 12px;border-bottom:1px solid var(--line);font-size:12.5px}
+.log div:last-child{border-bottom:0}
+.gate{max-width:420px;margin:12vh auto 0;background:var(--paper);border:2px solid var(--line);border-radius:24px;padding:22px;display:grid;gap:12px}
+.gate input{border:2px solid var(--line);border-radius:12px;padding:10px 12px;font:inherit;font-family:var(--f-mono)}
+.gate input:focus{border-color:var(--leaf);outline:0}
+.err{color:var(--down);font-weight:800;min-height:20px}
+.toast{position:fixed;left:50%;bottom:20px;transform:translate(-50%,40px);opacity:0;background:var(--pine);color:#fff;padding:10px 16px;border-radius:999px;font-weight:800;transition:.25s;pointer-events:none}
+.toast.on{transform:translate(-50%,0);opacity:1}
+@media (max-width:900px){.grid{grid-template-columns:1fr 1fr}.two{grid-template-columns:1fr}}
+@media (max-width:520px){.grid{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="brand"><img src="/favicon.svg" alt="">Pumpics <small>Admin</small></div>
+    <div style="display:flex;gap:8px;flex-wrap:wrap"><a class="btn" href="/">Open site</a><button class="btn" id="logout" type="button" hidden>Sign out</button></div>
+  </header>
+
+  <form class="gate" id="gate">
+    <div style="font-family:var(--f-display);font-size:22px">Operator sign-in</div>
+    <label class="label" for="tok">Admin token</label>
+    <input id="tok" type="password" autocomplete="current-password" placeholder="The ADMIN_TOKEN from your server settings">
+    <div class="err" id="gerr"></div>
+    <button class="btn go" type="submit">Open the panel</button>
+  </form>
+
+  <div id="panel" hidden>
+    <section class="grid" aria-label="Status">
+      <div class="card"><div class="label">Payouts</div><div class="big" id="mode">–</div><div class="sub" id="modeSub"></div></div>
+      <div class="card"><div class="label">Treasury</div><div class="big num" id="treasury">–</div><div class="sub" id="treasuryAddr"></div></div>
+      <div class="card"><div class="label">Next prize</div><div class="big num" id="pot">–</div><div class="sub" id="owed"></div></div>
+      <div class="card">
+        <div class="label">Switches</div>
+        <div class="toggle"><span>Entries <span class="pill" id="pEntries">open</span></span><button class="btn" id="tEntries" type="button">Pause</button></div>
+        <div class="toggle"><span>Payouts <span class="pill" id="pPayouts">running</span></span><button class="btn" id="tPayouts" type="button">Pause</button></div>
+      </div>
+    </section>
+
+    <section class="grid" style="margin-top:12px" aria-label="Data">
+      <div class="card"><div class="label">Kolscan scoring</div><div style="margin-top:6px" id="hKolscan"></div></div>
+      <div class="card"><div class="label">Helius backup</div><div style="margin-top:6px" id="hHelius"></div></div>
+      <div class="card"><div class="label">Trader costs</div><div class="big num" id="rosterCount">–</div><div class="sub" id="rosterAt"></div></div>
+      <div class="card"><div class="label">Actions</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:8px"><button class="btn" id="refresh" type="button">Refresh costs now</button><button class="btn" id="tick" type="button">Settle due rounds</button></div>
+        <div class="sub" id="rules"></div>
+      </div>
+    </section>
+
+    <h2>Rounds</h2>
+    <div class="tablewrap"><table><thead><tr><th>Round</th><th>Hour (UTC)</th><th>Status</th><th>Squads</th><th>Scored by</th><th>Paid</th><th>Note</th><th></th></tr></thead><tbody id="rounds"></tbody></table></div>
+
+    <div class="two">
+      <section>
+        <h2>Payouts</h2>
+        <div class="tablewrap"><table><thead><tr><th>Round</th><th>Winner</th><th>SOL</th><th>Status</th><th>Transaction</th><th></th></tr></thead><tbody id="payouts"></tbody></table></div>
+      </section>
+      <section>
+        <h2>Activity</h2>
+        <div class="tablewrap"><div class="log" id="log"></div></div>
+      </section>
+    </div>
+  </div>
+</div>
+<div class="toast" id="toast" role="status"></div>
+<script>
+(() => {
+  const $ = (id) => document.getElementById(id);
+  const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const sol = (l) => l == null ? '–' : (l / 1e9).toLocaleString('en-US', { maximumFractionDigits: 3, minimumFractionDigits: 2 });
+  const short = (w) => w ? w.slice(0, 4) + '…' + w.slice(-4) : '';
+  const ago = (t, now) => { if (!t) return 'never'; const s = Math.max(0, now - t); return s < 90 ? s + 's ago' : s < 5400 ? Math.round(s / 60) + ' min ago' : s < 129600 ? Math.round(s / 3600) + ' h ago' : Math.round(s / 86400) + ' days ago'; };
+  const hour = (ts) => new Date(ts * 1000).toISOString().slice(5, 16).replace('T', ' ');
+  let token = ''; try { token = sessionStorage.getItem('pumpics-admin') || ''; } catch {}
+  let data = null, timer = null, tt;
+  const toast = (m) => { const t = $('toast'); t.textContent = m; t.classList.add('on'); clearTimeout(tt); tt = setTimeout(() => t.classList.remove('on'), 2600); };
+
+  async function call(path, body) {
+    const res = await fetch('/api/admin' + path, { method: body ? 'POST' : 'GET', headers: { Authorization: 'Bearer ' + token, 'Content-Type': 'application/json' }, body: body ? JSON.stringify(body) : undefined });
+    let j = null; try { j = await res.json(); } catch {}
+    if (!res.ok) { const e = new Error((j && j.error) || 'Request failed (' + res.status + ')'); e.status = res.status; throw e; }
+    return j;
+  }
+  function health(h, now, missing) {
+    if (!h) return `<span class="pill idle">${missing}</span>`;
+    if (h.ok === null) return '<span class="pill idle">Not used yet</span>';
+    return h.ok ? `<span class="pill">Working</span><div class="sub">Last success ${ago(h.at, now)}</div>` : `<span class="pill off">Failing</span><div class="sub">${esc(h.error)} · ${ago(h.at, now)}</div>`;
+  }
+  function render() {
+    const d = data, now = d.now;
+    $('mode').textContent = d.payoutMode === 'live' ? 'Live' : 'Test mode';
+    $('modeSub').textContent = d.payoutMode === 'live' ? 'Winners are paid in SOL automatically.' : 'Winners are recorded, no SOL is sent. Set PAYOUT_MODE=live to pay.';
+    $('treasury').textContent = sol(d.pot.treasuryLamports) + ' SOL';
+    $('treasuryAddr').innerHTML = d.treasury ? `<a href="https://solscan.io/account/${esc(d.treasury)}" target="_blank" rel="noopener">${esc(short(d.treasury))}</a>` : 'No treasury set';
+    $('pot').textContent = sol(d.pot.potLamports) + ' SOL';
+    $('owed').textContent = d.owedLamports ? sol(d.owedLamports) + ' SOL waiting to be sent' : 'Nothing waiting to be sent';
+    const pe = d.paused.entries, pp = d.paused.payouts;
+    $('pEntries').textContent = pe ? 'paused' : 'open'; $('pEntries').className = 'pill' + (pe ? ' off' : '');
+    $('tEntries').textContent = pe ? 'Resume' : 'Pause';
+    $('pPayouts').textContent = pp ? 'paused' : 'running'; $('pPayouts').className = 'pill' + (pp ? ' off' : '');
+    $('tPayouts').textContent = pp ? 'Resume' : 'Pause';
+    $('hKolscan').innerHTML = health(d.health.kolscan, now, 'Off');
+    $('hHelius').innerHTML = d.sources.includes('helius') ? health(d.health.helius, now) : '<span class="pill idle">Off</span><div class="sub">Add HELIUS_API_KEY to turn on the backup.</div>';
+    $('rosterCount').textContent = d.roster.traders + ' traders';
+    const rh = d.health.roster;
+    $('rosterAt').innerHTML = `Costs updated ${ago(d.roster.updatedAt, now)} · every ${d.roster.refreshHours} h` + (rh && rh.ok === false ? `<br><span style="color:var(--down)">Last refresh failed: ${esc(rh.error)}</span>` : '');
+    const s = d.settings;
+    $('rules').textContent = `${Math.round(s.potShare * 100)}% of treasury per round · cap ${s.maxPayoutSol} SOL · rare pick < ${s.rarePickPct}% gets ×${s.rarePickBonus}` + (s.tokenMint ? ` · hold ${s.minTokenHold.toLocaleString('en-US')} to enter` : ' · no holder gate');
+    $('rounds').innerHTML = d.rounds.map((r) => {
+      const status = r.status === 'settled' ? (/^Voided/.test(r.note || '') ? '<span class="pill off">voided</span>' : '<span class="pill">settled</span>') : r.status === 'live' ? '<span class="pill warn">playing</span>' : r.end_ts <= now ? '<span class="pill warn">scoring</span>' : '<span class="pill idle">open</span>';
+      const canVoid = !(/^Voided/.test(r.note || '')) && !(r.status === 'settled' && r.pot_lamports > 0 && d.payouts.some((p) => p.round_id === r.id && (p.status === 'sent' || p.status === 'sending')));
+      return `<tr><td class="num">${r.id}</td><td class="num">${hour(r.start_ts)}</td><td>${status}</td><td class="num">${r.entries}</td><td>${esc(r.source || '–')}</td>
+        <td class="num">${r.pot_lamports ? sol(r.pot_lamports) + ' · ' + r.winners + 'w' : '–'}</td><td class="note">${esc(r.note || '')}</td>
+        <td>${canVoid && r.entries ? `<button class="btn danger" type="button" data-void="${r.id}">Void</button>` : ''}</td></tr>`;
+    }).join('') || '<tr><td colspan="8" class="note">No rounds yet.</td></tr>';
+    $('payouts').innerHTML = d.payouts.map((p) => {
+      const pill = p.status === 'sent' ? 'pill' : p.status === 'failed' ? 'pill off' : p.status === 'dry-run' ? 'pill idle' : 'pill warn';
+      return `<tr><td class="num">${p.round_id}</td><td><a href="https://solscan.io/account/${esc(p.wallet)}" target="_blank" rel="noopener">${esc(short(p.wallet))}</a></td><td class="num">${sol(p.lamports)}</td>
+        <td><span class="${pill}">${esc(p.status === 'dry-run' ? 'test' : p.status)}</span>${p.error ? `<div class="sub">${esc(p.error)}</div>` : ''}</td>
+        <td>${p.tx_sig ? `<a class="num" href="https://solscan.io/tx/${esc(p.tx_sig)}" target="_blank" rel="noopener">${esc(short(p.tx_sig))} ↗</a>` : '–'}</td>
+        <td>${p.status === 'failed' ? `<button class="btn" type="button" data-retry="${p.id}">Retry</button>` : ''}</td></tr>`;
+    }).join('') || '<tr><td colspan="6" class="note">No payouts yet.</td></tr>';
+    $('log').innerHTML = d.events.map((e) => `<div><span class="num" style="color:var(--sage)">${hour(e.at)}</span><b>${esc(e.kind)}</b><span>${esc(e.message)}</span></div>`).join('') || '<div><span></span><span></span><span class="note">Nothing yet.</span></div>';
+  }
+  async function load() {
+    try { data = await call('/overview'); render(); }
+    catch (e) { if (e.status === 403) return signOut(e.message); toast(e.message); }
+  }
+  function signIn() { $('gate').hidden = true; $('panel').hidden = false; $('logout').hidden = false; load(); clearInterval(timer); timer = setInterval(load, 15000); }
+  function signOut(msg) { token = ''; try { sessionStorage.removeItem('pumpics-admin'); } catch {} clearInterval(timer); $('panel').hidden = true; $('gate').hidden = false; $('logout').hidden = true; $('gerr').textContent = msg || ''; }
+  $('gate').addEventListener('submit', async (e) => {
+    e.preventDefault(); token = $('tok').value.trim(); $('gerr').textContent = '';
+    try { data = await call('/overview'); try { sessionStorage.setItem('pumpics-admin', token); } catch {} signIn(); }
+    catch (err) { $('gerr').textContent = err.message; }
+  });
+  $('logout').onclick = () => signOut();
+  const act = async (btn, fn, done) => { btn.disabled = true; try { const r = await fn(); toast(done(r)); await load(); } catch (e) { toast(e.message); } finally { btn.disabled = false; } };
+  $('tEntries').onclick = (e) => act(e.currentTarget, () => call('/pause', { entries: !data.paused.entries }), (r) => r.entries ? 'Entries paused' : 'Entries open');
+  $('tPayouts').onclick = (e) => act(e.currentTarget, () => call('/pause', { payouts: !data.paused.payouts }), (r) => r.payouts ? 'Payouts paused' : 'Payouts running');
+  $('refresh').onclick = (e) => act(e.currentTarget, () => call('/roster/refresh', {}), (r) => `Costs refreshed: ${r.traders} traders, ${r.changed} changed`);
+  $('tick').onclick = (e) => act(e.currentTarget, () => call('/tick', {}), () => 'Due rounds settled');
+  document.addEventListener('click', (e) => {
+    const v = e.target.closest('[data-void]'), r = e.target.closest('[data-retry]');
+    if (v) {
+      if (!v.classList.contains('armed')) { v.classList.add('armed'); v.textContent = 'Confirm void'; setTimeout(() => { v.classList.remove('armed'); v.textContent = 'Void'; }, 4000); return; }
+      act(v, () => call(`/rounds/${v.dataset.void}/void`, { reason: 'Voided by admin' }), () => `Round ${v.dataset.void} voided`);
+    }
+    if (r) act(r, () => call(`/payouts/${r.dataset.retry}/retry`, {}), () => 'Payout queued again');
+  });
+  if (token) call('/overview').then((d) => { data = d; signIn(); }).catch((e) => signOut(e.status === 403 ? '' : e.message));
+})();
+</script>
+</body>
+</html>
